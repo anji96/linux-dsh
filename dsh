@@ -1,0 +1,26 @@
+#!/bin/bash
+
+######################################################################################
+# MAIN
+######################################################################################
+export PATH=/usr/bin:/bin
+CONFFILE=/opt/totality/conf/dsh.conf
+
+hostgroup=$1
+shift
+passed="$*"
+
+hostgroup=$(echo $hostgroup | tr [a-z] [A-Z])
+
+if [[ $(cat $CONFFILE | grep -c "^${hostgroup}:") -eq 0 ]] ;then
+   echo "Undefined hostgroup entry - $hostgroup."
+   valid=$(cat $CONFFILE | cut -d":" -f1)
+   echo "Valid entries are: $valid"
+else
+   hosts="$(cat $CONFFILE | grep "^${hostgroup}:" | cut -d":" -f2)"
+   ##echo "DEBUG: hosts=$hosts"
+   for h in $(echo "$hosts") ; do
+      echo "**** $h ****"
+      ssh -q $h "$passed"
+   done
+fi
