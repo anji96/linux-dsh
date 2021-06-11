@@ -1,0 +1,7 @@
+lineNum=$(cat -n tags.json | grep -A 1 app | grep Value | awk '{print $1}')
+
+old=$(cat tags.json | grep -A 1 app | grep Value | awk -F '"' '{print $4}')
+New= "anji"
+
+
+sed "${lineNum}s/$old/anji/g"  tags.json > new_tags.json
